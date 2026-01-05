@@ -13,6 +13,7 @@ import type {
   PokemonSignatureMove,
   PokemonSpeciesData,
   PokemonSprites,
+  SpriteView,
   Locale,
 } from './types'
 
@@ -217,31 +218,36 @@ export function createPokemonBundle(
 export function selectSprite(
   sprites: PokemonSprites | undefined,
   artStyle: ArtStyle = 'official',
-  shiny: boolean = false
+  shiny: boolean = false,
+  view: SpriteView = 'front'
 ): string {
-  const key = shiny ? 'front_shiny' : 'front_default'
+  const key = `${view}_${shiny ? 'shiny' : 'default'}` as const
 
   const sources = {
-    official: sprites?.other?.['official-artwork']?.[key],
-    home: sprites?.other?.home?.[key],
-    nds: sprites?.[key],
-    animated: sprites?.versions?.['generation-v']?.['black-white']?.animated?.[key],
+    official: sprites?.other?.['official-artwork']?.[key as 'front_default' | 'front_shiny'],
+    home: sprites?.other?.home?.[key as keyof NonNullable<PokemonSprites['other']>['home']],
+    nds: sprites?.[key as keyof PokemonSprites],
+    animated: sprites?.versions?.['generation-v']?.['black-white']?.animated?.[key as keyof NonNullable<NonNullable<NonNullable<PokemonSprites['versions']>['generation-v']>['black-white']>['animated']],
   }
 
+  // official-artwork no tiene back sprites, usar fallback
   if (artStyle === 'official') {
-    return sources.official ?? sources.home ?? sources.nds ?? ''
+    if (view === 'back') {
+      return (sources.home ?? sources.nds ?? '') as string
+    }
+    return (sources.official ?? sources.home ?? sources.nds ?? '') as string
   }
 
   if (artStyle === 'home') {
-    return sources.home ?? sources.official ?? sources.nds ?? ''
+    return (sources.home ?? sources.official ?? sources.nds ?? '') as string
   }
 
   if (artStyle === 'animated') {
-    return sources.animated ?? sources.nds ?? sources.official ?? ''
+    return (sources.animated ?? sources.nds ?? sources.official ?? '') as string
   }
 
   // artStyle === 'nds'
-  return sources.nds ?? sources.official ?? sources.home ?? ''
+  return (sources.nds ?? sources.official ?? sources.home ?? '') as string
 }
 
 export function classifyVariant(name: string): VariantClassification | null {

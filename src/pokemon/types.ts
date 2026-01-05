@@ -5,6 +5,8 @@ export type Locale = 'en' | 'es' | 'ja'
 
 export type ArtStyle = 'official' | 'home' | 'nds' | 'animated'
 
+export type SpriteView = 'front' | 'back'
+
 export interface PokemonStat {
   base_stat: number
   effort: number
@@ -57,6 +59,8 @@ export interface PokemonSprites {
     home?: {
       front_default?: string | null
       front_shiny?: string | null
+      back_default?: string | null
+      back_shiny?: string | null
     }
   }
   versions?: {
@@ -65,12 +69,16 @@ export interface PokemonSprites {
         animated?: {
           front_default?: string | null
           front_shiny?: string | null
+          back_default?: string | null
+          back_shiny?: string | null
         }
       }
     }
   }
   front_default?: string | null
   front_shiny?: string | null
+  back_default?: string | null
+  back_shiny?: string | null
 }
 
 export interface PokemonCries {
