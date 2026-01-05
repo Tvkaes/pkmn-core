@@ -1368,7 +1368,7 @@ function createPokeAPIFetcher(baseUrl, cache, options) {
 }
 
 // src/index.ts
-var VERSION = "0.1.1";
+var VERSION = "0.1.2";
 
 export { CACHE_PRESETS, MemoryCache, PersistentCache, SWRCache, TYPE_CHART, VERSION, applyBoost, applyModifiers, buildAllSets, buildSupportSet, buildSweeperSet, buildTankSet, buildWallbreakerSet, calculateBaseDamage, calculateDamage, calculateKOChance, clampBoost, classifyVariant, createBattlePokemon, createCache, createIndexedDBAdapter, createIndexedDBCache, createInitialBattleState, createPersistentCache, createPersistentSWR, createPokeAPIFetcher, createPokemonBundle, createSWR, determineBattleProfile, excludeMove, excludeMoves, extractDescription, extractEnglishEffect, extractGenus, extractLocalizedDisplayName, extractNativeName, filterViableMoves, formatMoveLabel, formatPokemonId, formatPokemonName, getCoverageTargets, getMoveRoleTag, getOffensiveCoverage, getPrimaryRole, getTypeEffectiveness, getTypeMatchups, getTypeWeaknesses, getViableRoles, inferRoleWeights, isStrongStab, localStorageAdapter, mapDisplayData, mapGridEntry, mapStats, normalizeIdentifier, parsePokemon, pickBestDamagingMove, pickByTag, pickCoverageMoves, pickPriorityMove, pickRecoveryMove, pickSetupMove, pickStatusMove, pickStrongStab, pickUtilityMove, scoreMove, selectFeaturedAbility, selectSignatureMoves, withCache };
 //# sourceMappingURL=index.js.map

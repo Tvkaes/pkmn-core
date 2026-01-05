@@ -7,6 +7,6 @@ export { CACHE_PRESETS, CacheEntry, CacheOptions, CacheResult, MemoryCache, crea
 export { PersistentCache, PersistentCacheOptions, StorageAdapter, createIndexedDBAdapter, createIndexedDBCache, createPersistentCache, localStorageAdapter } from './cache/storage.js';
 export { SWRCache, SWROptions, createPersistentSWR, createPokeAPIFetcher, createSWR } from './cache/swr.js';
 
-declare const VERSION = "0.1.1";
+declare const VERSION = "0.1.2";
 
 export { VERSION };

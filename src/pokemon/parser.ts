@@ -2,6 +2,7 @@
 // Provides the unified parser and normalization logic for PokeAPI payloads without Vue/Pinia dependencies.
 
 import type {
+  ArtStyle,
   PokemonAlternateForm,
   PokemonBundle,
   PokemonData,
@@ -11,6 +12,7 @@ import type {
   PokemonGridEntry,
   PokemonSignatureMove,
   PokemonSpeciesData,
+  PokemonSprites,
   Locale,
 } from './types'
 
@@ -69,6 +71,7 @@ type VariantClassification = {
 export interface PokemonParserOptions {
   locale: Locale
   featuredAbilityOverride?: PokemonFeaturedAbility | null
+  artStyle?: ArtStyle
 }
 
 export interface PokemonParseResult {
@@ -211,6 +214,36 @@ export function createPokemonBundle(
   return { data, species, alternateForms }
 }
 
+export function selectSprite(
+  sprites: PokemonSprites | undefined,
+  artStyle: ArtStyle = 'official',
+  shiny: boolean = false
+): string {
+  const key = shiny ? 'front_shiny' : 'front_default'
+
+  const sources = {
+    official: sprites?.other?.['official-artwork']?.[key],
+    home: sprites?.other?.home?.[key],
+    nds: sprites?.[key],
+    animated: sprites?.versions?.['generation-v']?.['black-white']?.animated?.[key],
+  }
+
+  if (artStyle === 'official') {
+    return sources.official ?? sources.home ?? sources.nds ?? ''
+  }
+
+  if (artStyle === 'home') {
+    return sources.home ?? sources.official ?? sources.nds ?? ''
+  }
+
+  if (artStyle === 'animated') {
+    return sources.animated ?? sources.nds ?? sources.official ?? ''
+  }
+
+  // artStyle === 'nds'
+  return sources.nds ?? sources.official ?? sources.home ?? ''
+}
+
 export function classifyVariant(name: string): VariantClassification | null {
   const normalized = name.toLowerCase()
 
@@ -244,7 +277,8 @@ export function classifyVariant(name: string): VariantClassification | null {
 export function mapDisplayData(
   bundle: PokemonBundle,
   locale: Locale,
-  featuredAbilityOverride?: PokemonFeaturedAbility | null
+  featuredAbilityOverride?: PokemonFeaturedAbility | null,
+  artStyle: ArtStyle = 'official'
 ): PokemonDisplayData {
   const { data, species, alternateForms } = bundle
   return {
@@ -261,34 +295,26 @@ export function mapDisplayData(
     signatureMoves: selectSignatureMoves(data),
     height: data.height / 10,
     weight: data.weight / 10,
-    sprite:
-      data.sprites?.other?.['official-artwork']?.front_default ??
-      data.sprites?.other?.home?.front_default ??
-      data.sprites?.front_default ??
-      '',
-    spriteShiny:
-      data.sprites?.other?.['official-artwork']?.front_shiny ??
-      data.sprites?.other?.home?.front_shiny ??
-      data.sprites?.front_shiny ??
-      null,
+    sprite: selectSprite(data.sprites, artStyle, false),
+    spriteShiny: selectSprite(data.sprites, artStyle, true) || null,
     cryUrl: data.cries?.latest ?? data.cries?.legacy ?? undefined,
     hasMegaEvolution: alternateForms.length > 0,
     alternateForms,
   }
 }
 
-export function mapGridEntry(bundle: PokemonBundle, locale: Locale): PokemonGridEntry {
+export function mapGridEntry(
+  bundle: PokemonBundle,
+  locale: Locale,
+  artStyle: ArtStyle = 'official'
+): PokemonGridEntry {
   const { data, species, alternateForms } = bundle
   return {
     id: data.id,
     formattedId: formatPokemonId(data.id),
     name: extractLocalizedDisplayName(data, species, locale),
     nativeName: extractNativeName(species, 'ja'),
-    sprite:
-      data.sprites?.other?.['official-artwork']?.front_default ??
-      data.sprites?.other?.home?.front_default ??
-      data.sprites?.front_default ??
-      '',
+    sprite: selectSprite(data.sprites, artStyle, false),
     primaryType: data.types?.[0]?.type?.name ?? 'normal',
     hasMegaEvolution: alternateForms.length > 0,
     alternateForms: alternateForms.length ? alternateForms : undefined,
@@ -297,7 +323,8 @@ export function mapGridEntry(bundle: PokemonBundle, locale: Locale): PokemonGrid
 }
 
 export function parsePokemon(bundle: PokemonBundle, options: PokemonParserOptions): PokemonParseResult {
-  const display = mapDisplayData(bundle, options.locale, options.featuredAbilityOverride)
+  const artStyle = options.artStyle ?? 'official'
+  const display = mapDisplayData(bundle, options.locale, options.featuredAbilityOverride, artStyle)
   const primaryType = bundle.data.types?.[0]?.type?.name ?? 'normal'
   const details: PokemonDetails = {
     primaryType,
@@ -308,6 +335,6 @@ export function parsePokemon(bundle: PokemonBundle, options: PokemonParserOption
 
   return {
     details,
-    gridEntry: mapGridEntry(bundle, options.locale),
+    gridEntry: mapGridEntry(bundle, options.locale, artStyle),
   }
 }

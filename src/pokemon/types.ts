@@ -3,6 +3,8 @@
 
 export type Locale = 'en' | 'es' | 'ja'
 
+export type ArtStyle = 'official' | 'home' | 'nds' | 'animated'
+
 export interface PokemonStat {
   base_stat: number
   effort: number
@@ -55,6 +57,16 @@ export interface PokemonSprites {
     home?: {
       front_default?: string | null
       front_shiny?: string | null
+    }
+  }
+  versions?: {
+    ['generation-v']?: {
+      ['black-white']?: {
+        animated?: {
+          front_default?: string | null
+          front_shiny?: string | null
+        }
+      }
     }
   }
   front_default?: string | null
