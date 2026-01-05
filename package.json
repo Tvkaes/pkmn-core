@@ -1,0 +1,60 @@
+{
+  "name": "@tvkaes/pkmn-core",
+  "version": "0.1.1",
+  "description": "Core logic shared between Pokédex UI and Pokémon battle simulator",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./pokemon": {
+      "import": "./dist/pokemon/index.js",
+      "types": "./dist/pokemon/index.d.ts"
+    },
+    "./moves": {
+      "import": "./dist/moves/index.js",
+      "types": "./dist/moves/index.d.ts"
+    },
+    "./battle": {
+      "import": "./dist/battle/index.js",
+      "types": "./dist/battle/index.d.ts"
+    },
+    "./cache": {
+      "import": "./dist/cache/index.js",
+      "types": "./dist/cache/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "build:tsc": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "pokemon",
+    "pokedex",
+    "battle-simulator",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
